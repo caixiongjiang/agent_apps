@@ -180,6 +180,10 @@ class ConfigManager:
         """获取文件处理配置"""
         return self.get_section("file_upload")
 
+    def get_storage_config(self) -> Dict[str, Any]:
+        """获取文件存储服务配置"""
+        return self.get_section("storage")
+
     # ==================== 配置验证 ====================
 
     def validate(self) -> Dict[str, List[str]]:
@@ -203,6 +207,7 @@ class ConfigManager:
             "mineru": ["api_url"],
             "logging": ["level", "log_dir", "log_file"],
             "file_upload": ["supported_formats", "max_file_size", "temp_dir"],
+            "storage": ["storage_root", "max_file_size_mb", "max_batch_size"],
         }
 
         for section, required_fields in required_configs.items():

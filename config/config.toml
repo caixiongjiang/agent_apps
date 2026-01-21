@@ -179,3 +179,42 @@ supported_formats = ["pdf", "docx", "pptx", "xlsx", "txt", "md", "json"]
 max_file_size = 100
 # 文件上传临时目录
 temp_dir = "upload"
+
+# ==================== 文件存储服务配置 ====================
+
+[storage]
+# 存储根目录
+storage_root = "./upload"
+# 是否使用哈希目录结构（避免单目录文件过多）
+use_hash_structure = true
+# 是否启用压缩（暂未实现）
+enable_compression = false
+# 单文件最大大小（MB）
+max_file_size_mb = 50
+# 批量上传最大文件数
+max_batch_size = 10
+
+# 过期时间配置
+[storage.expiration]
+# 临时文件过期时间（小时）
+temp_hours = 1
+# 会话文件过期时间（小时）
+session_hours = 2
+
+# 允许的文件类型（MIME类型白名单）
+[storage.allowed_types]
+mime_types = [
+    "application/pdf",
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "text/plain",
+    "text/markdown",
+    "application/json"
+]
+extensions = [".pdf", ".jpg", ".jpeg", ".png", ".gif", ".webp", ".docx", ".xlsx", ".pptx", ".txt", ".md", ".json"]
