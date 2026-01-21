@@ -2,14 +2,13 @@
 # -*- coding: UTF-8 -*-
 """=================================================
 @PROJECT_NAME: agent_apps
-@File    : services.py
+@File    : mineru.py
 @Author  : caixiongjiang
-@Date    : 2026/1/19 11:04
+@Date    : 2026/1/21
 @Function: 
-    通用服务接口 - 跨 Agent 复用（简化版）
-    包括: MinerU 解析服务
+    MinerU 文档解析服务路由
 @Modify History:
-    2026/1/19 - 简化为同步等待模式，移除Redis依赖
+    2026/1/21 - 从 services.py 拆分出来
 @Copyright：Copyright(c) 2024-2026. All Rights Reserved
 =================================================="""
 
@@ -17,10 +16,11 @@ from fastapi import APIRouter, HTTPException, UploadFile, File, Depends, Query
 from typing import List
 
 from src.services.mineru.schemas import ParseResult, BatchParseResult, PaginationConfig
-from src.services.mineru.service import MinerUService
+from src.services.mineru.service import MinerUService, BatchMinerUService
 
-# 创建路由
-router = APIRouter(prefix="/api/v1/services", tags=["Common Services"])
+# 创建路由（不包含前缀，由上层统一管理）
+router = APIRouter(tags=["MinerU - 文档解析"])
+
 
 # ========== 依赖注入 ==========
 
@@ -58,10 +58,9 @@ def get_mineru_service() -> MinerUService:
     )
 
 
+# ========== 路由端点 ==========
 
-# ========== MinerU 解析服务 ==========
-
-@router.post("/mineru/parse", response_model=ParseResult, summary="解析文档")
+@router.post("/parse", response_model=ParseResult, summary="解析文档")
 async def parse_document(
     file: UploadFile = File(..., description="上传的文件"),
     auto_pagination: bool = Query(True, description="是否自动分页处理大文件"),
@@ -82,7 +81,7 @@ async def parse_document(
     
     **示例**:
     ```bash
-    curl -X POST "http://localhost:8000/api/v1/services/mineru/parse" \\
+    curl -X POST "http://localhost:8000/api/v1/common/mineru/parse" \\
          -F "file=@document.pdf" \\
          -F "auto_pagination=true"
     ```
@@ -119,7 +118,7 @@ async def parse_document(
         raise HTTPException(status_code=500, detail=f"解析失败: {str(e)}")
 
 
-@router.post("/mineru/parse/batch", response_model=BatchParseResult, summary="批量解析文档")
+@router.post("/parse/batch", response_model=BatchParseResult, summary="批量解析文档")
 async def parse_documents_batch(
     files: List[UploadFile] = File(..., description="上传的文件列表"),
     auto_pagination: bool = Query(True, description="是否自动分页"),
@@ -134,7 +133,7 @@ async def parse_documents_batch(
     
     **示例**:
     ```bash
-    curl -X POST "http://localhost:8000/api/v1/services/mineru/parse/batch" \\
+    curl -X POST "http://localhost:8000/api/v1/common/mineru/parse/batch" \\
          -F "files=@doc1.pdf" \\
          -F "files=@doc2.pdf" \\
          -F "files=@doc3.pdf"
@@ -148,7 +147,6 @@ async def parse_documents_batch(
             file_list.append((file_bytes, file.filename))
         
         # 批量解析
-        from src.services.mineru.service import BatchMinerUService
         batch_service = BatchMinerUService(mineru_service)
         results = await batch_service.parse_documents(file_list, auto_pagination)
         
@@ -171,7 +169,7 @@ async def parse_documents_batch(
         raise HTTPException(status_code=500, detail=f"批量解析失败: {str(e)}")
 
 
-@router.get("/mineru/config", response_model=PaginationConfig, summary="获取分页配置")
+@router.get("/config", response_model=PaginationConfig, summary="获取分页配置")
 async def get_pagination_config(
     mineru_service: MinerUService = Depends(get_mineru_service)
 ):

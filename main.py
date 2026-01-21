@@ -20,7 +20,7 @@ from loguru import logger
 
 from src.utils.config_manager import get_config_manager
 from src.utils.env_manager import get_env_manager
-from api.routes import services
+from api import routes
 
 # 初始化配置管理器
 config_manager = get_config_manager()
@@ -80,7 +80,7 @@ app.add_middleware(
 )
 
 # 注册路由
-app.include_router(services.router)
+app.include_router(routes.router)
 
 # 健康检查
 @app.get("/health", tags=["Health"])
