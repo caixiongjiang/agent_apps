@@ -11,6 +11,7 @@ dependencies = [
     "loguru>=0.7.3",
     "pymupdf>=1.26.7",
     "pymysql>=1.1.2",
+    "redis[hiredis]>=7.1.0",
     "sqlalchemy>=2.0.45",
     "tavily-python>=0.7.17",
     "toml>=0.10.2",
