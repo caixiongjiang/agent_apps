@@ -71,7 +71,7 @@ class FileMetadata(Base):
     )
     
     # ========== 关联信息 ==========
-    uploaded_by = Column(String(50), nullable=True, comment="上传者ID")
+    user_id = Column(String(50), nullable=True, index=True, comment="用户ID（统一字段名）")
     session_id = Column(String(50), nullable=True, index=True, comment="会话ID")
     agent_type = Column(String(50), nullable=True, comment="关联的Agent类型")
     
@@ -110,7 +110,7 @@ class FileMetadata(Base):
     __table_args__ = (
         Index("idx_category_status", "category", "processing_status"),
         Index("idx_expires_at", "expires_at"),
-        Index("idx_uploaded_by", "uploaded_by"),
+        Index("idx_user_id", "user_id"),
         {"comment": "文件元数据表"}
     )
     
@@ -144,7 +144,7 @@ class FileMetadata(Base):
             "category": self.category,
             "upload_time": self.upload_time.isoformat() if self.upload_time else None,
             "expires_at": self.expires_at.isoformat() if self.expires_at else None,
-            "uploaded_by": self.uploaded_by,
+            "user_id": self.user_id,
             "session_id": self.session_id,
             "agent_type": self.agent_type,
             "processing_status": self.processing_status,

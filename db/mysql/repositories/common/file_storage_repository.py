@@ -42,7 +42,7 @@ class FileStorageRepository:
         mime_type: str,
         category: str,
         expires_at: Optional[datetime] = None,
-        uploaded_by: Optional[str] = None,
+        user_id: Optional[str] = None,
         session_id: Optional[str] = None,
         agent_type: Optional[str] = None,
         processing_status: str = FileStatus.UPLOADED.value,
@@ -59,7 +59,7 @@ class FileStorageRepository:
             mime_type: MIME类型
             category: 文件分类
             expires_at: 过期时间
-            uploaded_by: 上传者ID
+            user_id: 上传者ID
             session_id: 会话ID
             agent_type: Agent类型
             processing_status: 处理状态
@@ -77,7 +77,7 @@ class FileStorageRepository:
             category=category,
             upload_time=datetime.now(),
             expires_at=expires_at,
-            uploaded_by=uploaded_by,
+            user_id=user_id,
             session_id=session_id,
             agent_type=agent_type,
             processing_status=processing_status,
@@ -153,7 +153,7 @@ class FileStorageRepository:
         self,
         session_id: Optional[str] = None,
         category: Optional[str] = None,
-        uploaded_by: Optional[str] = None,
+        user_id: Optional[str] = None,
         agent_type: Optional[str] = None,
         limit: int = 100,
         offset: int = 0
@@ -164,7 +164,7 @@ class FileStorageRepository:
         Args:
             session_id: 会话ID过滤
             category: 分类过滤
-            uploaded_by: 上传者过滤
+            user_id: 上传者过滤
             agent_type: Agent类型过滤
             limit: 每页数量
             offset: 偏移量
@@ -180,8 +180,8 @@ class FileStorageRepository:
             conditions.append(FileMetadata.session_id == session_id)
         if category:
             conditions.append(FileMetadata.category == category)
-        if uploaded_by:
-            conditions.append(FileMetadata.uploaded_by == uploaded_by)
+        if user_id:
+            conditions.append(FileMetadata.user_id == user_id)
         if agent_type:
             conditions.append(FileMetadata.agent_type == agent_type)
         
