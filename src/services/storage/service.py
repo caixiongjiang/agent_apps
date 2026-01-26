@@ -74,7 +74,7 @@ class FileStorageService:
         file_name: str,
         category: str = FileCategory.TEMP.value,
         session_id: Optional[str] = None,
-        uploaded_by: Optional[str] = None,
+        user_id: Optional[str] = None,
         agent_type: Optional[str] = None,
         metadata: Dict[str, Any] = None,
         auto_parse: bool = False
@@ -87,7 +87,7 @@ class FileStorageService:
             file_name: 原始文件名
             category: 文件分类
             session_id: 会话ID
-            uploaded_by: 上传者ID
+            user_id: 用户ID（统一字段名）
             agent_type: 关联的Agent类型
             metadata: 额外元数据
             auto_parse: 是否自动触发MinerU解析
@@ -121,7 +121,7 @@ class FileStorageService:
                         mime_type=file_info.mime_type,
                         category=file_info.category,
                         expires_at=file_info.expires_at,
-                        uploaded_by=uploaded_by,
+                        user_id=user_id,
                         session_id=session_id,
                         agent_type=agent_type,
                         processing_status=FileStatus.UPLOADED.value,
@@ -160,7 +160,7 @@ class FileStorageService:
         files: List[Tuple[bytes, str]],
         category: str = FileCategory.TEMP.value,
         session_id: Optional[str] = None,
-        uploaded_by: Optional[str] = None,
+        user_id: Optional[str] = None,
         agent_type: Optional[str] = None,
         auto_parse: bool = False
     ) -> BatchUploadResponse:
@@ -171,7 +171,7 @@ class FileStorageService:
             files: 文件列表 [(file_bytes, file_name), ...]
             category: 文件分类
             session_id: 会话ID
-            uploaded_by: 上传者ID
+            user_id: 用户ID（统一字段名）
             agent_type: Agent类型
             auto_parse: 是否自动解析
         
@@ -197,7 +197,7 @@ class FileStorageService:
                     file_name=file_name,
                     category=category,
                     session_id=session_id,
-                    uploaded_by=uploaded_by,
+                    user_id=user_id,
                     agent_type=agent_type,
                     auto_parse=auto_parse
                 )
@@ -252,7 +252,7 @@ class FileStorageService:
                 storage_path=file_metadata.storage_path,
                 upload_time=file_metadata.upload_time,
                 expires_at=file_metadata.expires_at,
-                uploaded_by=file_metadata.uploaded_by,
+                user_id=file_metadata.user_id,
                 session_id=file_metadata.session_id,
                 agent_type=file_metadata.agent_type,
                 processing_status=file_metadata.processing_status,
@@ -327,8 +327,8 @@ class FileStorageService:
                     )
                 
                 # 权限检查（可选）
-                if user_id and file_metadata.uploaded_by:
-                    if user_id != file_metadata.uploaded_by:
+                if user_id and file_metadata.user_id:
+                    if user_id != file_metadata.user_id:
                         return DeleteFileResponse(
                             file_id=file_id,
                             success=False,
@@ -361,7 +361,7 @@ class FileStorageService:
         self,
         session_id: Optional[str] = None,
         category: Optional[str] = None,
-        uploaded_by: Optional[str] = None,
+        user_id: Optional[str] = None,
         agent_type: Optional[str] = None,
         limit: int = 100,
         offset: int = 0
@@ -372,7 +372,7 @@ class FileStorageService:
         Args:
             session_id: 会话ID过滤
             category: 分类过滤
-            uploaded_by: 上传者过滤
+            user_id: 用户ID过滤（统一字段名）
             agent_type: Agent类型过滤
             limit: 每页数量
             offset: 偏移量
@@ -385,7 +385,7 @@ class FileStorageService:
             files = repository.list_files(
                 session_id=session_id,
                 category=category,
-                uploaded_by=uploaded_by,
+                user_id=user_id,
                 agent_type=agent_type,
                 limit=limit,
                 offset=offset
@@ -401,7 +401,7 @@ class FileStorageService:
                     storage_path=f.storage_path,
                     upload_time=f.upload_time,
                     expires_at=f.expires_at,
-                    uploaded_by=f.uploaded_by,
+                    user_id=f.user_id,
                     session_id=f.session_id,
                     agent_type=f.agent_type,
                     processing_status=f.processing_status,

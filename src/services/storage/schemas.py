@@ -25,7 +25,7 @@ class UploadFileRequest(BaseModel):
     """文件上传请求模型"""
     category: str = Field(default=FileCategory.TEMP.value, description="文件分类: temp/session/permanent")
     session_id: Optional[str] = Field(None, description="会话ID（用于关联同一会话的文件）")
-    uploaded_by: Optional[str] = Field(None, description="上传者ID")
+    user_id: Optional[str] = Field(None, description="用户ID（统一字段名）")
     metadata: Dict[str, Any] = Field(default_factory=dict, description="额外元数据")
     auto_parse: bool = Field(default=False, description="是否自动触发MinerU解析")
     
@@ -43,7 +43,7 @@ class UploadFileRequest(BaseModel):
             "example": {
                 "category": "session",
                 "session_id": "sess_123456",
-                "uploaded_by": "user_001",
+                "user_id": "user_001",
                 "metadata": {"source": "web", "purpose": "compliance_check"},
                 "auto_parse": True
             }
@@ -54,7 +54,7 @@ class BatchUploadRequest(BaseModel):
     """批量上传请求模型"""
     category: str = Field(default=FileCategory.TEMP.value, description="文件分类")
     session_id: Optional[str] = Field(None, description="会话ID")
-    uploaded_by: Optional[str] = Field(None, description="上传者ID")
+    user_id: Optional[str] = Field(None, description="用户ID（统一字段名）")
     auto_parse: bool = Field(default=False, description="是否自动解析")
 
 
@@ -140,7 +140,7 @@ class FileInfoResponse(BaseModel):
     upload_time: datetime = Field(..., description="上传时间")
     expires_at: Optional[datetime] = Field(None, description="过期时间")
     
-    uploaded_by: Optional[str] = Field(None, description="上传者ID")
+    user_id: Optional[str] = Field(None, description="用户ID（统一字段名）")
     session_id: Optional[str] = Field(None, description="会话ID")
     agent_type: Optional[str] = Field(None, description="关联的Agent类型")
     processing_status: str = Field(..., description="处理状态")
@@ -163,7 +163,7 @@ class FileInfoResponse(BaseModel):
                 "storage_path": "session/ab/cd/ef/file_abc123.pdf",
                 "upload_time": "2026-01-21T10:30:00",
                 "expires_at": "2026-01-21T12:30:00",
-                "uploaded_by": "user_001",
+                "user_id": "user_001",
                 "session_id": "sess_123",
                 "agent_type": "document_compliance",
                 "processing_status": "completed",

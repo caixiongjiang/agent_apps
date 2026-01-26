@@ -78,7 +78,7 @@ async def upload_file(
     file: UploadFile = File(..., description="上传的文件"),
     category: str = Form("temp", description="文件分类: temp/session/permanent"),
     session_id: Optional[str] = Form(None, description="会话ID"),
-    uploaded_by: Optional[str] = Form(None, description="上传者ID"),
+    user_id: Optional[str] = Form(None, description="用户ID（统一字段名）"),
     agent_type: Optional[str] = Form(None, description="关联的Agent类型"),
     auto_parse: bool = Form(False, description="是否自动触发MinerU解析"),
     service: FileStorageService = Depends(get_storage_service)
@@ -130,7 +130,7 @@ async def upload_file(
             file_name=file.filename,
             category=category,
             session_id=session_id,
-            uploaded_by=uploaded_by,
+            user_id=user_id,
             agent_type=agent_type,
             auto_parse=auto_parse
         )
@@ -150,7 +150,7 @@ async def upload_files_batch(
     files: List[UploadFile] = File(..., description="上传的文件列表"),
     category: str = Form("temp", description="文件分类"),
     session_id: Optional[str] = Form(None, description="会话ID"),
-    uploaded_by: Optional[str] = Form(None, description="上传者ID"),
+    user_id: Optional[str] = Form(None, description="用户ID（统一字段名）"),
     agent_type: Optional[str] = Form(None, description="Agent类型"),
     auto_parse: bool = Form(False, description="是否自动解析"),
     service: FileStorageService = Depends(get_storage_service)
@@ -183,7 +183,7 @@ async def upload_files_batch(
             files=file_list,
             category=category,
             session_id=session_id,
-            uploaded_by=uploaded_by,
+            user_id=user_id,
             agent_type=agent_type,
             auto_parse=auto_parse
         )
@@ -294,7 +294,7 @@ async def delete_file(
 async def list_files(
     session_id: Optional[str] = Query(None, description="会话ID过滤"),
     category: Optional[str] = Query(None, description="分类过滤"),
-    uploaded_by: Optional[str] = Query(None, description="上传者过滤"),
+    user_id: Optional[str] = Query(None, description="用户ID过滤（统一字段名）"),
     agent_type: Optional[str] = Query(None, description="Agent类型过滤"),
     limit: int = Query(100, le=500, description="每页数量"),
     offset: int = Query(0, ge=0, description="偏移量"),
@@ -321,7 +321,7 @@ async def list_files(
         results = service.list_files(
             session_id=session_id,
             category=category,
-            uploaded_by=uploaded_by,
+            user_id=user_id,
             agent_type=agent_type,
             limit=limit,
             offset=offset
